@@ -34,7 +34,6 @@
         }
 
         .container { max-width: 600px; margin: auto; padding: 20px; }
-
         .page { display: none; }
         .page.active { display: block; }
 
@@ -45,7 +44,6 @@
             border-radius: 15px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
         .box {
@@ -71,28 +69,22 @@
         button { background-color: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; }
         button:active { transform: scale(0.98); }
 
-        table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
-        th, td { padding: 10px; border: 1px solid var(--primary); text-align: left; }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; }
+        th, td { padding: 8px; border: 1px solid var(--primary); text-align: left; }
         th { background: var(--primary); color: white; }
 
         .navbar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--white);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
+            position: fixed; bottom: 0; width: 100%; background: var(--white);
+            display: flex; justify-content: space-around; padding: 10px 0;
             border-top: 2px solid var(--primary);
         }
 
         .nav-item { text-align: center; font-size: 11px; color: var(--dark); cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
 
-        /* Tabel Laporan Custom */
-        .table-laporan { width: 100%; margin-top: 5px; margin-bottom: 15px; }
-        .table-laporan tr td { padding: 8px 0; border: none; border-bottom: 1px dashed var(--secondary); }
-        .label-periode { font-weight: bold; color: var(--dark); background: var(--secondary); padding: 5px 10px; border-radius: 5px; display: inline-block; margin-bottom: 10px; }
+        .label-periode { font-weight: bold; background: var(--secondary); padding: 5px 10px; border-radius: 5px; display: inline-block; margin-bottom: 10px; }
+        .btn-del { background: #a32a2a; padding: 4px 8px; font-size: 11px; width: auto; margin: 0; }
+        .tgl-txt { font-size: 10px; color: #777; display: block; }
     </style>
 </head>
 <body>
@@ -109,16 +101,10 @@
             <h1 id="dashOmzet">Rp 0</h1>
         </div>
         <div class="box">
-            <h3 style="text-align:center; margin-top:0;">Detail Pembayaran Hari Ini</h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span>💵 Cash</span> <b id="dashCash">Rp 0</b>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span>📱 QRIS</span> <b id="dashQRIS">Rp 0</b>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span>🏦 Transfer</span> <b id="dashTransfer">Rp 0</b>
-            </div>
+            <h3 style="text-align:center; margin-top:0;">Pembayaran Hari Ini</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>💵 Cash</span> <b id="dashCash">Rp 0</b></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>📱 QRIS</span> <b id="dashQRIS">Rp 0</b></div>
+            <div style="display: flex; justify-content: space-between;"><span>🏦 Transfer</span> <b id="dashTransfer">Rp 0</b></div>
         </div>
     </div>
 
@@ -139,7 +125,7 @@
             <h3>Riwayat Hari Ini</h3>
             <div style="overflow-x:auto">
                 <table>
-                    <thead><tr><th>Nama</th><th>Layanan</th><th>Harga</th></tr></thead>
+                    <thead><tr><th>Tgl/Nama</th><th>Layanan</th><th>Total</th><th>Aksi</th></tr></thead>
                     <tbody id="listTransaksi"></tbody>
                 </table>
             </div>
@@ -148,39 +134,43 @@
 
     <div id="biaya" class="page">
         <div class="box">
-            <h2>Input Biaya Operasional</h2>
+            <h2>Input Pengeluaran</h2>
             <input type="text" id="ketBiaya" placeholder="Keterangan">
             <input type="number" id="jmlBiaya" placeholder="Nominal (Rp)">
-            <button style="background:#555" onclick="simpanBiaya()">Catat Pengeluaran</button>
+            <button style="background:#555" onclick="simpanBiaya()">Catat Biaya</button>
+        </div>
+        <div class="box">
+            <h3>Riwayat Pengeluaran</h3>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>Tanggal/Ket</th><th>Nominal</th><th>Aksi</th></tr></thead>
+                    <tbody id="listBiaya"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <div id="laporan" class="page">
         <div class="box">
-            <h2>Laporan Transaksi & Keuangan</h2>
-            
-            <div class="label-periode">📅 Harian (Hari Ini)</div>
-            <table class="table-laporan">
-                <tr><td>Pemasukan</td><td style="text-align:right;" id="lapDayIn">Rp 0</td></tr>
-                <tr><td>Pengeluaran</td><td style="text-align:right;" id="lapDayOut">Rp 0</td></tr>
+            <h2>Laporan Keuangan</h2>
+            <div class="label-periode">📅 Harian</div>
+            <table style="margin-bottom:15px; border:none;">
+                <tr><td style="border:none;">Pemasukan</td><td style="text-align:right; border:none;" id="lapDayIn">0</td></tr>
+                <tr><td style="border:none;">Pengeluaran</td><td style="text-align:right; border:none;" id="lapDayOut">0</td></tr>
             </table>
-
-            <div class="label-periode">🗓️ Mingguan (7 Hari Terakhir)</div>
-            <table class="table-laporan">
-                <tr><td>Pemasukan</td><td style="text-align:right;" id="lapWeekIn">Rp 0</td></tr>
-                <tr><td>Pengeluaran</td><td style="text-align:right;" id="lapWeekOut">Rp 0</td></tr>
+            <div class="label-periode">🗓️ Mingguan</div>
+            <table style="margin-bottom:15px; border:none;">
+                <tr><td style="border:none;">Pemasukan</td><td style="text-align:right; border:none;" id="lapWeekIn">0</td></tr>
+                <tr><td style="border:none;">Pengeluaran</td><td style="text-align:right; border:none;" id="lapWeekOut">0</td></tr>
             </table>
-
-            <div class="label-periode">🏢 Bulanan (Bulan Ini)</div>
-            <table class="table-laporan">
-                <tr><td>Pemasukan</td><td style="text-align:right;" id="lapMonthIn">Rp 0</td></tr>
-                <tr><td>Pengeluaran</td><td style="text-align:right;" id="lapMonthOut">Rp 0</td></tr>
+            <div class="label-periode">🏢 Bulanan</div>
+            <table style="margin-bottom:15px; border:none;">
+                <tr><td style="border:none;">Pemasukan</td><td style="text-align:right; border:none;" id="lapMonthIn">0</td></tr>
+                <tr><td style="border:none;">Pengeluaran</td><td style="text-align:right; border:none;" id="lapMonthOut">0</td></tr>
             </table>
-
-            <hr style="border: 1px solid var(--secondary);">
-            <div style="display:flex; justify-content:space-between; font-size:1.3em; font-weight:bold; margin-top:10px;">
-                <span>Total Laba Bersih</span>
-                <span id="lapTotalLaba" style="color:green;">Rp 0</span>
+            <hr>
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2em;">
+                <span>Total Laba</span><span id="lapTotalLaba" style="color:green;">0</span>
             </div>
         </div>
     </div>
@@ -188,13 +178,12 @@
     <div id="setting" class="page">
         <div class="box">
             <h2>Data Management</h2>
-            <button onclick="exportData()">Export Data (Backup)</button>
-            <button onclick="document.getElementById('fileInput').click()" style="background:#8B4513;">Import Data (Restore)</button>
+            <button onclick="exportData()">Export Backup</button>
+            <button onclick="document.getElementById('fileInput').click()" style="background:#8B4513;">Import Restore</button>
             <input type="file" id="fileInput" style="display:none" onchange="importData(event)">
-            <button style="background:#a32a2a; margin-top:20px;" onclick="resetData()">Reset Semua Data</button>
+            <button style="background:#a32a2a; margin-top:20px;" onclick="resetData()">Reset Data</button>
         </div>
     </div>
-
 </div>
 
 <div class="navbar">
@@ -208,6 +197,11 @@
 <script>
     let dbTx = JSON.parse(localStorage.getItem('js_tx')) || [];
     let dbEx = JSON.parse(localStorage.getItem('js_ex')) || [];
+
+    function formatTgl(ts) {
+        const d = new Date(ts);
+        return d.toLocaleDateString('id-ID', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+    }
 
     function bukaHalaman(id, el) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -223,45 +217,42 @@
         const startOfWeek = new Date().getTime() - (7 * 24 * 60 * 60 * 1000);
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-        let dIn = 0, wIn = 0, mIn = 0, totalIn = 0;
-        let c = 0, q = 0, t = 0;
+        let dIn = 0, wIn = 0, mIn = 0, totalIn = 0, c = 0, q = 0, t = 0;
+        const listTx = document.getElementById('listTransaksi');
+        listTx.innerHTML = '';
         
-        const list = document.getElementById('listTransaksi');
-        list.innerHTML = '';
-
-        dbTx.forEach((x) => {
-            const time = x.date;
+        dbTx.forEach((x, index) => {
             const hrg = parseInt(x.harga);
-            
-            if(time >= startOfDay) { 
+            if(x.date >= startOfDay) { 
                 dIn += hrg;
-                list.innerHTML += `<tr><td>${x.nama}</td><td>${x.layanan}</td><td>${hrg.toLocaleString()}</td></tr>`;
+                listTx.innerHTML += `<tr><td><span class="tgl-txt">${formatTgl(x.date)}</span>${x.nama}</td><td>${x.layanan}</td><td>${hrg.toLocaleString()}</td><td><button class="btn-del" onclick="hapusTx(${index})">🗑️</button></td></tr>`;
                 if(x.metode === 'Cash') c += hrg;
                 if(x.metode === 'QRIS') q += hrg;
                 if(x.metode === 'Transfer') t += hrg;
             }
-            if(time >= startOfWeek) wIn += hrg;
-            if(time >= startOfMonth) mIn += hrg;
+            if(x.date >= startOfWeek) wIn += hrg;
+            if(x.date >= startOfMonth) mIn += hrg;
             totalIn += hrg;
         });
 
         let dOut = 0, wOut = 0, mOut = 0, totalOut = 0;
-        dbEx.forEach((x) => {
-            const time = x.date;
+        const listEx = document.getElementById('listBiaya');
+        listEx.innerHTML = '';
+        dbEx.forEach((x, index) => {
             const jml = parseInt(x.jml);
-            if(time >= startOfDay) dOut += jml;
-            if(time >= startOfWeek) wOut += jml;
-            if(time >= startOfMonth) mOut += jml;
+            if(x.date >= startOfDay) dOut += jml;
+            if(x.date >= startOfWeek) {
+                wOut += jml;
+                listEx.innerHTML += `<tr><td><span class="tgl-txt">${formatTgl(x.date)}</span>${x.ket}</td><td>${jml.toLocaleString()}</td><td><button class="btn-del" onclick="hapusEx(${index})">🗑️</button></td></tr>`;
+            }
+            if(x.date >= startOfMonth) mOut += jml;
             totalOut += jml;
         });
 
-        // Update Dashboard (Harian)
         document.getElementById('dashOmzet').innerText = 'Rp ' + dIn.toLocaleString();
         document.getElementById('dashCash').innerText = 'Rp ' + c.toLocaleString();
         document.getElementById('dashQRIS').innerText = 'Rp ' + q.toLocaleString();
         document.getElementById('dashTransfer').innerText = 'Rp ' + t.toLocaleString();
-
-        // Update Laporan Berdasarkan Periode
         document.getElementById('lapDayIn').innerText = 'Rp ' + dIn.toLocaleString();
         document.getElementById('lapDayOut').innerText = 'Rp ' + dOut.toLocaleString();
         document.getElementById('lapWeekIn').innerText = 'Rp ' + wIn.toLocaleString();
@@ -279,14 +270,11 @@
         const l = document.getElementById('layanan').value;
         const h = document.getElementById('harga').value;
         const m = document.getElementById('metode').value;
-        if(!l || !h) return alert('Isi data!');
-
+        if(!l || !h) return alert('Layanan/Harga kosong!');
         dbTx.push({nama: n, layanan: l, harga: h, metode: m, date: Date.now()});
         updateUI();
-
         let teksStruk = "       JHON SALON       \n--------------------------------\nTgl   : " + new Date().toLocaleString() + "\nNama  : " + n + "\n--------------------------------\nLayanan: " + l + "\nTotal  : Rp " + parseInt(h).toLocaleString() + "\nBayar  : " + m + "\n--------------------------------\n   Terima Kasih    \n\n\n";
         window.location.href = "rawbt:base64," + btoa(unescape(encodeURIComponent(teksStruk)));
-
         document.getElementById('nama').value=''; document.getElementById('layanan').value=''; document.getElementById('harga').value='';
     }
 
@@ -300,31 +288,21 @@
         document.getElementById('ketBiaya').value=''; document.getElementById('jmlBiaya').value='';
     }
 
+    function hapusTx(idx) { if(confirm('Hapus?')) { dbTx.splice(idx, 1); updateUI(); } }
+    function hapusEx(idx) { if(confirm('Hapus?')) { dbEx.splice(idx, 1); updateUI(); } }
     function exportData() {
         const data = JSON.stringify({tx: dbTx, ex: dbEx});
         const blob = new Blob([data], {type: "application/json"});
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'jhon_salon_backup.json';
-        a.click();
+        a.href = URL.createObjectURL(blob); a.download = 'backup_jhon_salon.json'; a.click();
     }
-
     function importData(e) {
         const reader = new FileReader();
-        reader.onload = (ev) => {
-            const data = JSON.parse(ev.target.result);
-            dbTx = data.tx; dbEx = data.ex; updateUI();
-            alert('Data pulih!');
-        };
+        reader.onload = (ev) => { dbTx = JSON.parse(ev.target.result).tx; dbEx = JSON.parse(ev.target.result).ex; updateUI(); alert('Sukses!'); };
         reader.readAsText(e.target.files[0]);
     }
-
-    function resetData() {
-        if(confirm('Hapus semua?')) { localStorage.clear(); location.reload(); }
-    }
-
+    function resetData() { if(confirm('Hapus semua?')) { localStorage.clear(); location.reload(); } }
     updateUI();
 </script>
-
 </body>
 </html>
